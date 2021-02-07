@@ -5,4 +5,29 @@ html, body {
 
 canvas {
   display: block;
+  position: absolute;
+  bottom: 0px;
+  height: 1080px;
+  width: 1920px;
+  z-index: -1;
+
+}
+#canvas{
+  position: absolute;
+  bottom: 30px;
+  height: 1080px;
+  width: 1920px;
+  z-index: 1;
+
+
+}
+#gui{
+  bottom: 0px;
+  position:absolute;
+  align-self: bottom;
+  height: 30px;
+  width: 1920px;
+  background-color: yellow;
+  z-index: 0;
+
 }

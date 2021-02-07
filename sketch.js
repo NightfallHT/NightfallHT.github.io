@@ -9,22 +9,40 @@ var offsetX, offsetY;    // Mouseclick offset
 let xArr = [];
 let yArr = [];
 let colorArr = [];
+let buttonArr = [24, 30, 32, 36, 40, 45, 48, 50, 52, 56, 60, 63, 64, 72, 75, 80, 84];
 
 let normalizedAngle = 0;
-
+let buttonVal = 24;
+let currentAngle = 0;
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  //drawGui();
+
+  buttonArr.forEach((buttonVal, i) => {
+    const button = createButton(buttonVal);
+    button.position(windowWidth/18 * (i+1), windowHeight-100);
+    button.mousePressed(() => changeR(buttonVal));
+  });
+
+  // function drawGui(){
+  //   for (i = 1; i <= 17; i++)
+  //  {
+  //   let button = [i];
+  //   button[i] = createButton(buttonArr[i]);
+  //   button[i].position(windowWidth/18 * i, windowHeight/2);
+  //   button[i].mousePressed(buttonVal = buttonArr[i]);
+  //   button[i].mousePressed(changeR);
+  //  }
   
   
   // Dimensions
   R = 105 * 2;          //radius of the outside circle
-  r = 80 * 2;           //radius of the inside circle
+  r = buttonVal*2;           //radius of the inside circle
   D = 2 * R;            //diameter of the outside circle
   d = 2 * r;            //diameter of the inside circle
-  p = 60;               //distance of the pen
+  p = 20;               //distance of the pen
 
-  l = p/r;
-  k = r/R;
+
 
 
   counter = 0;          //how many times has the mouse angle reset
@@ -48,45 +66,17 @@ function setup() {
 }
 
 function draw() {
+  l = p/r;
+  k = r/R;
   background(200);
-
+ 
+  d = 2*r;
+  //DISPLAY DATA
+  displayData();
   
+  determineMouseDirection();
 
-
-
-
-
-
-
-
-
-
-
-  if (mouseY < oldy) {              //determine the direction
-        direction = "up";
-  } else if (mouseY > oldy) {
-            direction = "down";
-  }
-  oldy = mouseY;
-
-
-text(direction, 10, 90)
-text(crossedUp, 10, 120)
-text(crossedDown, 10, 150)
-text(counter, 10, 180)
-text(mouseY, 10, 210)
-text(normalizedAngle, 10, 240)
-
-  
-    // Is mouse over object
-    let m_dist = dist(mouseX, mouseY, x, y);
-    if (m_dist < r) {
-      rollover = true;
-    } else {
-      rollover = false;
-    }
-
-  
+  mouseover();
 
   stroke(0);
   
@@ -103,8 +93,7 @@ text(normalizedAngle, 10, 240)
     ellipse(xpen,ypen,10);
     noFill();
     ellipse (windowWidth/2, windowHeight/2, D);
-    text (mouseAngle, 10, 30);
-    text (penAngle, 10, 60)
+    
 
   if (mouseIsPressed === true){
       xArr.push(xpen);
@@ -168,10 +157,61 @@ if (mouseX < width / 2){
   dragging = true;
   x = width / 2 + (R-r) * cos(mouseAngle);
   y = height / 2 + (R-r) * sin(mouseAngle);
-
+  currentAngle = mouseAngle;
  
   xpen = R * ((1 - k) * cos(penAngle) + (l * k * cos(((1-k) / k) * penAngle))) + (width) / 2
   ypen = R * ((1 - k) * sin(penAngle) - (l * k * sin(((1-k) / k) * penAngle))) + (height) / 2
   }
 }
 
+function displayData (){
+  text (mouseAngle, 10, 30);
+text (penAngle, 10, 60)
+  text(direction, 10, 90)
+  text(crossedUp, 10, 120)
+  text(crossedDown, 10, 150)
+  text(counter, 10, 180)
+  text(mouseY, 10, 210)
+  text(normalizedAngle, 10, 240)
+}
+
+function determineMouseDirection(){
+  if (mouseY < oldy) {              //determine the direction
+    direction = "up";
+} else if (mouseY > oldy) {
+        direction = "down";
+}
+oldy = mouseY;
+}
+
+function mouseover(){
+      // Is mouse over object
+      let m_dist = dist(mouseX, mouseY, x, y);
+      if (m_dist < r) {
+        rollover = true;
+      } else {
+        rollover = false;
+      }
+  
+}
+
+// function drawGui(){
+//   for (i = 1; i <= 17; i++)
+//  {
+//   let button = [i];
+//   button[i] = createButton(buttonArr[i]);
+//   button[i].position(windowWidth/18 * i, windowHeight/2);
+//   button[i].mousePressed(buttonVal = buttonArr[i]);
+//   button[i].mousePressed(changeR);
+//  }
+
+// }
+function changeR(buttonVal){
+  let prevR = r;
+  r = buttonVal;
+  let prevX = x;
+  let prevY = y;
+  x = width / 2 + (R-r) * cos(currentAngle);
+  y = height / 2 + (R-r) * sin(currentAngle);
+  //y = windowHeight/2 - (R-r);
+}
