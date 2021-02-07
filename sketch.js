@@ -211,7 +211,12 @@ function changeR(buttonVal){
   r = buttonVal;
   let prevX = x;
   let prevY = y;
+  l = p/r;
+  k = r/R;
   x = width / 2 + (R-r) * cos(currentAngle);
   y = height / 2 + (R-r) * sin(currentAngle);
+  penAngle = TWO_PI * counter + currentAngle;
+  xpen = R * ((1 - k) * cos(penAngle) + (l * k * cos(((1-k) / k) * penAngle))) + (width) / 2
+  ypen = R * ((1 - k) * sin(penAngle) - (l * k * sin(((1-k) / k) * penAngle))) + (height) / 2
   //y = windowHeight/2 - (R-r);
 }
