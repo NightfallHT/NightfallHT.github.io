@@ -111,7 +111,7 @@ function draw() {
   star (windowWidth/2, windowHeight/2, R, R+10, 105);
   push();
   translate (x,y)
-  rotate(currentAngle*180/PI)  
+  rotate(2*-penAngle/r*180/PI)  
   if (dragging) {
     fill(150);
   } else if (rollover) {
