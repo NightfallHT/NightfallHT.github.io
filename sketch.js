@@ -6,7 +6,7 @@ var offsetX, offsetY; // Mouseclick offset
 // Arrays
 let xArr = [];
 let yArr = [];
-let buttonArr = [24, 30, 32, 36, 40, 45, 48, 50, 52, 56, 60, 63, 64, 72, 75, 80, 84];
+var buttonArr = [24, 30, 32, 36, 40, 45, 48, 50, 52, 56, 60, 63, 64, 72, 75, 80, 84];
 // Sliders
 let pSlider
 let rSlider 
@@ -19,16 +19,20 @@ let blue = 0
 
 let confirmButton;
 
-let buttonVal = 24;
+var buttonVal = 24;
+var buttonVal2 = 24;
 let currentAngle = 0;
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
   // Buttons
   buttonArr.forEach((buttonVal, i) => {
-    const button = createButton(buttonVal);
-    button.position(windowWidth/2 - 390 + windowWidth/42 * (i+1), windowHeight - 95);
+    button = createButton(buttonVal);
+    button.position(windowWidth/2 - 390 + windowWidth/42 * (i+1), windowHeight - 100);
+    button.size(30,30);
     button.mousePressed(() => changeR(buttonVal));
+
+
   });
   confirmButton = createButton("save current preset");
   confirmButton.position(windowWidth/2 + 290, windowHeight - 50);
@@ -84,6 +88,7 @@ function draw() {
   d = 2*r;
   // User Interface
   drawGUI();
+  drawOutline();
   displayData();
   determineMouseDirection();
   mouseover();  
@@ -189,6 +194,7 @@ function coordinates(){
 
 // Gear button
 function changeR(buttonVal){
+  buttonVal2 = buttonVal;
   tempR = buttonVal*2;
   
   pSlider.remove();
@@ -254,6 +260,7 @@ function star(x, y, radius1, radius2, npoints) {
 
 // User Interface
 function drawGUI(){
+  
   stroke(50)
   fill(50)
   rect(windowWidth/2 - 450, windowHeight - 160, 900, 150, 20, 20,)   //ui Rectangle
@@ -268,6 +275,7 @@ function drawGUI(){
   text('R', windowWidth/2 - 425, windowHeight - 125)
   text('G', windowWidth/2 - 175, windowHeight - 125)
   text('B', windowWidth/2 + 75, windowHeight - 125)
+  
 }
 
 // Display data
@@ -285,4 +293,10 @@ function displayData(){
   text(buttonVal, 10, 400)
   text(p, 10, 330)
   noStroke();
+}
+
+function drawOutline(){
+  stroke(255);
+  index = buttonArr.indexOf(buttonVal2);
+  rect(windowWidth/2 - 395 + windowWidth/42 * (index+1), windowHeight - 105, 41, 41)  
 }
