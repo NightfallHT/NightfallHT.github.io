@@ -17,6 +17,8 @@ let red = 255
 let green = 0
 let blue = 0
 
+var i1 = 0;
+
 let confirmButton;
 
 let buttonVal = 24;
@@ -25,16 +27,16 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
 
   // Buttons
-  buttonArr.forEach((buttonVal, i) => {
+  buttonArr.forEach((buttonVal, i1) => {
     const button = createButton(buttonVal);
-    button.position(windowWidth/2 - 390 + windowWidth/42 * (i+1), windowHeight - 95);
+    button.position(windowWidth/2 - 390 + windowWidth/42 * (i1+1), windowHeight - 95);
     button.mousePressed(() => changeR(buttonVal));
   });
   confirmButton = createButton("save current preset");
   confirmButton.position(windowWidth/2 + 290, windowHeight - 50);
   confirmButton.mousePressed(confirmPreset);
   // Dimensions
-  R = 105 * 2;          //radius of the outside circle
+  R = 96 * 2;          //radius of the outside circle
   r = buttonVal*2;      //radius of the inside circle
   // Sliders
   pSlider = createSlider (0, r-10, 10, 1);
@@ -77,7 +79,7 @@ function setup() {
 
 function draw() {
   // Clearing background
-  background(0);
+  background(100);
   // Value reset
   l = p/r;
   k = r/R;
@@ -99,20 +101,21 @@ function draw() {
   text('G', windowWidth/2 - 175, windowHeight - 125)
   text('B', windowWidth/2 + 75, windowHeight - 125)
 
-  //displayData();
+  displayData();
   determineMouseDirection();
   mouseover();  
 
   // Gears
   stroke(200);
   fill(200);
-  star (windowWidth/2, windowHeight/2, 250, 260, 125);
+  star (windowWidth/2, windowHeight/2, 240, 250, 120);
   fill(0);
-  star (windowWidth/2, windowHeight/2, R, R+10, 105);
+  star (windowWidth/2, windowHeight/2, R, R+10, 96);
   push();
   translate (x,y)
-  rotate(2*-penAngle/r*180/PI)  
+  
   if (dragging) {
+    rotate(-((R-r)/r)*(currentAngle))  
     fill(150);
   } else if (rollover) {
     fill(175);
@@ -142,18 +145,20 @@ function draw() {
 function mouseDragged(){
   
   let m_dist = dist(mouseX, mouseY, x, y);      //mouse distance from the inner circle
-  if (m_dist < d/2) {                          //determines whether the mouse is hovering over
+  if (m_dist < r ) {                          //determines whether the mouse is hovering over
       dragging = true;
-  }
+  }//else {dragging = false;}
   translate(width / 2, height / 2);
 
   coordinates();
 
   mouseAngle =  atan2(mouseY - height/2, mouseX - width/2);
+  if (dragging){
   penAngle = TWO_PI * counter + mouseAngle;
+  }
 
   if(dragging){
-  dragging = true;
+  //dragging = true;
   x = width / 2 + (R-r) * cos(mouseAngle);
   y = height / 2 + (R-r) * sin(mouseAngle);
   currentAngle = mouseAngle;
@@ -274,7 +279,6 @@ function star(x, y, radius1, radius2, npoints) {
 // Display data
 function displayData (){
   stroke(255);
-  noFill();
   text (mouseAngle, 10, 30);
   text (penAngle, 10, 60)
   text(direction, 10, 90)
