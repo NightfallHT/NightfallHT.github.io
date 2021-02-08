@@ -89,7 +89,7 @@ function draw() {
   // User Interface
   drawGUI();
   drawOutline();
-  displayData();
+  //displayData();
   determineMouseDirection();
   mouseover();  
   // Gears
