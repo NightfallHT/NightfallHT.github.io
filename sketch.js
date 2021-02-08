@@ -300,4 +300,4 @@ function drawOutline(){
   stroke(125);
   index = buttonArr.indexOf(buttonVal2);
   rect(windowWidth/2 - 394 + windowWidth/42 * (index+1), windowHeight - 104, 39, 39, 4, 4)  
-}
+}//yes
