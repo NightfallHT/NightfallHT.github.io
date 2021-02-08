@@ -29,7 +29,7 @@ function setup() {
   buttonArr.forEach((buttonVal, i) => {
     button = createButton(buttonVal);
     button.position(windowWidth/2 - 390 + windowWidth/42 * (i+1), windowHeight - 100);
-    button.size(30,30);
+    button.size(31,31);
     button.mousePressed(() => changeR(buttonVal));
 
 
@@ -138,15 +138,15 @@ function mouseDragged(){
   coordinates();
 
   if(dragging){
-  mouseAngle =  atan2(mouseY - height/2, mouseX - width/2);
-  penAngle = TWO_PI * counter + mouseAngle;
-  x = width / 2 + (R-r) * cos(mouseAngle);
-  y = height / 2 + (R-r) * sin(mouseAngle);
-  currentAngle = mouseAngle;
- 
-  xpen = R * ((1 - k) * cos(penAngle) + (l * k * cos(((1-k) / k) * penAngle))) + (width) / 2
-  ypen = R * ((1 - k) * sin(penAngle) - (l * k * sin(((1-k) / k) * penAngle))) + (height) / 2
-  }
+    mouseAngle =  atan2(mouseY - height/2, mouseX - width/2);
+    penAngle = TWO_PI * counter + mouseAngle;
+    x = width / 2 + (R-r) * cos(mouseAngle);
+    y = height / 2 + (R-r) * sin(mouseAngle);
+    currentAngle = mouseAngle;
+   
+    xpen = R * ((1 - k) * cos(penAngle) + (l * k * cos(((1-k) / k) * penAngle))) + (width) / 2
+    ypen = R * ((1 - k) * sin(penAngle) - (l * k * sin(((1-k) / k) * penAngle))) + (height) / 2
+    }
 }
 
 function determineMouseDirection(){
@@ -282,7 +282,7 @@ function drawGUI(){
 function displayData(){
   stroke(255);
   noFill();
-  text (mouseAngle, 10, 30);
+  text (mouseAngle, 10, 30); text (currentAngle, 200, 30);
   text (penAngle, 10, 60)
   text(direction, 10, 90)
   text(crossedUp, 10, 120)
@@ -296,7 +296,8 @@ function displayData(){
 }
 
 function drawOutline(){
-  stroke(255);
+  fill(125);
+  stroke(125);
   index = buttonArr.indexOf(buttonVal2);
-  rect(windowWidth/2 - 395 + windowWidth/42 * (index+1), windowHeight - 105, 41, 41)  
+  rect(windowWidth/2 - 394 + windowWidth/42 * (index+1), windowHeight - 104, 39, 39, 4, 4)  
 }
