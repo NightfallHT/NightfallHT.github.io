@@ -17,8 +17,6 @@ let red = 255
 let green = 0
 let blue = 0
 
-var i1 = 0;
-
 let confirmButton;
 
 let buttonVal = 24;
@@ -27,9 +25,9 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
 
   // Buttons
-  buttonArr.forEach((buttonVal, i1) => {
+  buttonArr.forEach((buttonVal, i) => {
     const button = createButton(buttonVal);
-    button.position(windowWidth/2 - 390 + windowWidth/42 * (i1+1), windowHeight - 95);
+    button.position(windowWidth/2 - 390 + windowWidth/42 * (i+1), windowHeight - 95);
     button.mousePressed(() => changeR(buttonVal));
   });
   confirmButton = createButton("save current preset");
@@ -85,26 +83,10 @@ function draw() {
   k = r/R;
   d = 2*r;
   // User Interface
-  push()
-  stroke(50)
-  fill(50)
-  rect(windowWidth/2 - 450, windowHeight - 160, 900, 150, 20, 20,)   //ui Rectangle
-  stroke(rSlider.value(), gSlider.value(), bSlider.value())
-  fill(rSlider.value(), gSlider.value(), bSlider.value())
-  rect(windowWidth/2 + 325, windowHeight - 140, 90, 20, 5, 5)                //color rectangle
-  pop()
-  stroke(0)
-  fill(255)
-  text('Gear Size', windowWidth/2 - 425, windowHeight-80)
-  text('Pen Distance', windowWidth/2 - 425, windowHeight - 37)
-  text('R', windowWidth/2 - 425, windowHeight - 125)
-  text('G', windowWidth/2 - 175, windowHeight - 125)
-  text('B', windowWidth/2 + 75, windowHeight - 125)
-
+  drawGUI();
   displayData();
   determineMouseDirection();
   mouseover();  
-
   // Gears
   stroke(200);
   fill(200);
@@ -113,9 +95,8 @@ function draw() {
   star (windowWidth/2, windowHeight/2, R, R+10, 96);
   push();
   translate (x,y)
-  
+  rotate(-((R-r)/r)*(currentAngle))  
   if (dragging) {
-    rotate(-((R-r)/r)*(currentAngle))  
     fill(150);
   } else if (rollover) {
     fill(175);
@@ -141,24 +122,19 @@ function draw() {
     line (xArr[i-1], yArr[i-1], xArr[i], yArr[i]);
   }
 }
- 
+
 function mouseDragged(){
-  
   let m_dist = dist(mouseX, mouseY, x, y);      //mouse distance from the inner circle
-  if (m_dist < r ) {                          //determines whether the mouse is hovering over
+  if (m_dist < r) {                           //determines whether the mouse is hovering over
       dragging = true;
-  }//else {dragging = false;}
+  }
   translate(width / 2, height / 2);
 
   coordinates();
 
-  mouseAngle =  atan2(mouseY - height/2, mouseX - width/2);
-  if (dragging){
-  penAngle = TWO_PI * counter + mouseAngle;
-  }
-
   if(dragging){
-  //dragging = true;
+  mouseAngle =  atan2(mouseY - height/2, mouseX - width/2);
+  penAngle = TWO_PI * counter + mouseAngle;
   x = width / 2 + (R-r) * cos(mouseAngle);
   y = height / 2 + (R-r) * sin(mouseAngle);
   currentAngle = mouseAngle;
@@ -276,9 +252,28 @@ function star(x, y, radius1, radius2, npoints) {
   endShape(CLOSE);
 }
 
+// User Interface
+function drawGUI(){
+  stroke(50)
+  fill(50)
+  rect(windowWidth/2 - 450, windowHeight - 160, 900, 150, 20, 20,)   //ui Rectangle
+  stroke(rSlider.value(), gSlider.value(), bSlider.value())
+  fill(rSlider.value(), gSlider.value(), bSlider.value())
+  rect(windowWidth/2 + 325, windowHeight - 140, 90, 20, 5, 5)                //color rectangle
+  pop()
+  stroke(0)
+  fill(255)
+  text('Gear Size', windowWidth/2 - 425, windowHeight-80)
+  text('Pen Distance', windowWidth/2 - 425, windowHeight - 37)
+  text('R', windowWidth/2 - 425, windowHeight - 125)
+  text('G', windowWidth/2 - 175, windowHeight - 125)
+  text('B', windowWidth/2 + 75, windowHeight - 125)
+}
+
 // Display data
-function displayData (){
+function displayData(){
   stroke(255);
+  noFill();
   text (mouseAngle, 10, 30);
   text (penAngle, 10, 60)
   text(direction, 10, 90)
