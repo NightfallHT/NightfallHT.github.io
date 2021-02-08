@@ -1,56 +1,68 @@
-// Click and Drag an object
 var dragging = false; // Is the object being dragged?
 var rollover = false; // Is the mouse over the ellipse?
 
 var x, y, r;          // Location and size
-var offsetX, offsetY;    // Mouseclick offset
+var offsetX, offsetY; // Mouseclick offset
 // Arrays
 let xArr = [];
 let yArr = [];
-let colorArr = [];
 let buttonArr = [24, 30, 32, 36, 40, 45, 48, 50, 52, 56, 60, 63, 64, 72, 75, 80, 84];
-// Slider
+// Sliders
 let pSlider
+let rSlider 
+let gSlider
+let bSlider
+// Colors
+let red = 255
+let green = 0
+let blue = 0
 
 let confirmButton;
 
-let normalizedAngle = 0;
 let buttonVal = 24;
 let currentAngle = 0;
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  //drawGui();
 
+  // Buttons
   buttonArr.forEach((buttonVal, i) => {
     const button = createButton(buttonVal);
-    button.position(400 + windowWidth/30 * (i+1), windowHeight-100);
+    button.position(windowWidth/2 - 390 + windowWidth/42 * (i+1), windowHeight - 95);
     button.mousePressed(() => changeR(buttonVal));
   });
   confirmButton = createButton("save current preset");
-  confirmButton.position(1325 + windowWidth/30, windowHeight - 50);
-  confirmButton.mousePressed (confirmPreset);
-
+  confirmButton.position(windowWidth/2 + 290, windowHeight - 50);
+  confirmButton.mousePressed(confirmPreset);
   // Dimensions
   R = 105 * 2;          //radius of the outside circle
   r = buttonVal*2;      //radius of the inside circle
-  // Slider
+  // Sliders
   pSlider = createSlider (0, r-10, 10, 1);
-  pSlider.position(400 + windowWidth/30, windowHeight-50);
-  pSlider.style('width', '900px');
-  // Dimensions continuation
+  pSlider.position(windowWidth/2 - 335, windowHeight-50);
+  pSlider.style('width', '600px');
+
+  rSlider = createSlider (0, 255, 255, 1);
+  rSlider.position(windowWidth/2 - 400, windowHeight - 140);
+  rSlider.style('width', '200px');
+
+  gSlider = createSlider (0, 255, 0, 1);
+  gSlider.position(windowWidth/2 - 150, windowHeight - 140);
+  gSlider.style('width', '200px');
+
+  bSlider = createSlider (0, 255, 0, 1);
+  bSlider.position(windowWidth/2 + 100, windowHeight - 140);
+  bSlider.style('width', '200px');
+  // Dimensions
   D = 2 * R;            //diameter of the outside circle
   d = 2 * r;            //diameter of the inside circle
-  p = pSlider.value();               //distance of the pen
-
-
-
+  p = pSlider.value();  //distance of the pen
 
   counter = 0;          //how many times has the mouse angle reset
   crossedUp = false;    //has the mouse crossed from the bottom half to the upper half
   crossedDown = false;  //has the mouse crossed from the upper half to the bottom half
 
   mouseAngle = atan2(mouseY - height/2, mouseX - width/2);
-  penAngle = -((R-r)/r)*currentAngle;
+  penAngle = -((R-r)/r)*mouseAngle;
 
   // Starting location
   x = (R-r) + windowWidth/2;
@@ -58,86 +70,87 @@ function setup() {
   xpen = x + p;
   ypen = windowHeight/2;
 
-  
-
-  direction = "";                  //which  direction is the mouse moving
+  direction = "";       //which  direction is the mouse moving
   oldy = 0;
   oldx = 0;
 }
 
 function draw() {
+  // Clearing background
+  background(0);
+  // Value reset
   l = p/r;
   k = r/R;
-  
-  background(200);
- 
   d = 2*r;
+  // User Interface
   push()
-  stroke(0)
+  stroke(50)
   fill(50)
-  rect(400, windowHeight - 200, windowWidth-740, 200)
+  rect(windowWidth/2 - 450, windowHeight - 160, 900, 150, 20, 20,)   //ui Rectangle
+  stroke(rSlider.value(), gSlider.value(), bSlider.value())
+  fill(rSlider.value(), gSlider.value(), bSlider.value())
+  rect(windowWidth/2 + 325, windowHeight - 140, 90, 20, 5, 5)                //color rectangle
   pop()
-  //DISPLAY DATA
-  displayData();
-  
+  stroke(0)
+  fill(255)
+  text('Gear Size', windowWidth/2 - 425, windowHeight-80)
+  text('Pen Distance', windowWidth/2 - 425, windowHeight - 37)
+  text('R', windowWidth/2 - 425, windowHeight - 125)
+  text('G', windowWidth/2 - 175, windowHeight - 125)
+  text('B', windowWidth/2 + 75, windowHeight - 125)
+
+  //displayData();
   determineMouseDirection();
+  mouseover();  
 
-  mouseover();
-
-  coordinates();
-
+  // Gears
+  stroke(200);
+  fill(200);
+  star (windowWidth/2, windowHeight/2, 250, 260, 125);
+  fill(0);
+  star (windowWidth/2, windowHeight/2, R, R+10, 105);
+  push();
+  translate (x,y)
+  rotate(currentAngle*180/PI)  
+  if (dragging) {
+    fill(150);
+  } else if (rollover) {
+    fill(175);
+  } else {
+    fill(175, 200);
+  }
+  star(0, 0, r, r+10, r/2);
+  pop()
+  push()
+  fill(0)
+  ellipse(xpen,ypen,10);
+  pop()
   noStroke();
-  
-    //Different fill based on state
-    if (dragging) {
-      fill(150);
-    } else if (rollover) {
-      fill(175);
-    } else {
-      fill(175, 200);
-    }
-    stroke(0);
-    ellipse(x, y, d);
-    ellipse(xpen,ypen,10);
-    noFill();
-    ellipse (windowWidth/2, windowHeight/2, D);
-    noStroke();
-
+  // Drawing
   if (dragging === true){
-      xArr.push(xpen);
-      yArr.push(ypen);
-      colorArr.push(Math.random());
+    xArr.push(xpen);
+    yArr.push(ypen);
   }
   
   for (let i = 0; i<xArr.length; i++){
-      strokeWeight(1);
-      stroke( 255, 0, 0);
-      line (xArr[i-1], yArr[i-1], xArr[i], yArr[i]);
-      strokeWeight(1);
-
+    strokeWeight(1);
+    stroke(red, green, blue);
+    line (xArr[i-1], yArr[i-1], xArr[i], yArr[i]);
   }
-  
 }
  
-function mouseMoved(){
- translate(width / 2, height / 2);
- mouseAngle =  atan2(mouseY - height/2, mouseX - width/2);
- //penAngle = TWO_PI * counter + (-((R-r)/r) * mouseAngle);
- //penAngle = TWO_PI * counter + mouseAngle;
-}
-
 function mouseDragged(){
   
   let m_dist = dist(mouseX, mouseY, x, y);      //mouse distance from the inner circle
-    if (m_dist < d/2) {                         //determines whether the mouse is hovering over
+  if (m_dist < d/2) {                          //determines whether the mouse is hovering over
       dragging = true;
   }
   translate(width / 2, height / 2);
 
+  coordinates();
+
   mouseAngle =  atan2(mouseY - height/2, mouseX - width/2);
-  //penAngle = -((R-r)/r)*mouseAngle;
-  penAngle = TWO_PI * counter + currentAngle;
-  //penAngle = TWO_PI * counter + (-((R-r)/r) * mouseAngle);
+  penAngle = TWO_PI * counter + mouseAngle;
 
   if(dragging){
   dragging = true;
@@ -150,8 +163,118 @@ function mouseDragged(){
   }
 }
 
+function determineMouseDirection(){
+  if (mouseY < oldy) {
+    direction = "up";
+  }else if (mouseY > oldy) {
+        direction = "down";
+  }
+  oldy = mouseY;
+}
+
+function mouseover(){
+  let m_dist = dist(mouseX, mouseY, x, y);   
+  if (m_dist < r) {                   
+    rollover = true;
+  } else {
+    rollover = false;
+  }
+}
+
+// Coordinates
+function coordinates(){
+  window.addEventListener('mouseup', function(e) {dragging = false;
+  rollover = false;}, false);
+  // Counter
+  if (mouseX < width / 2){
+  if (direction == "up" && mouseY < windowHeight / 2 && crossedUp == false){
+    counter++;
+    crossedUp = true;
+    crossedDown = false;
+  }else if (direction == "down" && mouseY > windowHeight / 2 && crossedDown == false){
+    counter--;
+    crossedUp = false;
+    crossedDown = true;
+  }
+  }else{
+  if (direction == "down" && mouseY > windowHeight / 2 && crossedDown == false){
+    crossedUp = false;
+    crossedDown = true;
+  }else if (direction == "up" && mouseY < windowHeight / 2 && crossedUp == false){
+    crossedUp = true;
+    crossedDown = false;
+  }}
+}
+
+// Gear button
+function changeR(buttonVal){
+  tempR = buttonVal*2;
+  
+  pSlider.remove();
+  
+  pSlider = createSlider (0, tempR-10, 10, 1);
+  pSlider.position(windowWidth/2 - 335, windowHeight-50);
+  pSlider.style('width', '600px');
+}
+
+// PresetButton
+function confirmPreset(){
+  p = pSlider.value();
+  // Colors
+  red = rSlider.value();
+  green = gSlider.value();
+  blue = bSlider.value();
+  //remove
+  rSlider.remove();
+  gSlider.remove();
+  bSlider.remove();
+  //red
+  rSlider = createSlider (0, 255, red, 1);
+  rSlider.position(windowWidth/2 - 400, windowHeight - 140);
+  rSlider.style('width', '200px');
+  //green
+  gSlider = createSlider (0, 255, green, 1);
+  gSlider.position(windowWidth/2 - 150, windowHeight - 140);
+  gSlider.style('width', '200px');
+  //blue
+  bSlider = createSlider (0, 255, blue, 1);
+  bSlider.position(windowWidth/2 + 100, windowHeight - 140);
+  bSlider.style('width', '200px');
+  //
+  xArr = [];
+  yArr = [];
+  noStroke();
+  dragging = false;
+  r = tempR;
+  l = p/r;
+  k = r/R;
+  x = width / 2 + (R-r) * cos(mouseAngle);
+  y = height / 2 + (R-r) * sin(mouseAngle);
+  penAngle = TWO_PI * counter + mouseAngle;
+  xpen = R * ((1 - k) * cos(penAngle) + (l * k * cos(((1-k) / k) * penAngle))) + (width) / 2
+  ypen = R * ((1 - k) * sin(penAngle) - (l * k * sin(((1-k) / k) * penAngle))) + (height) / 2
+}
+
+// Stars
+function star(x, y, radius1, radius2, npoints) {
+  let angle = TWO_PI / npoints;
+  let halfAngle = angle / 2.0;
+  beginShape();
+  for (let a = 0; a < TWO_PI; a += angle) {
+    let sx = x + cos(a) * radius2;
+    let sy = y + sin(a) * radius2;
+    vertex(sx, sy);
+    sx = x + cos(a + halfAngle) * radius1;
+    sy = y + sin(a + halfAngle) * radius1;
+    vertex(sx, sy);
+  }
+  endShape(CLOSE);
+}
+
+// Display data
 function displayData (){
-  stroke(0);
+  stroke(255);
+  noFill();
   text (mouseAngle, 10, 30);
   text (penAngle, 10, 60)
   text(direction, 10, 90)
@@ -159,110 +282,8 @@ function displayData (){
   text(crossedDown, 10, 150)
   text(counter, 10, 180)
   text(mouseY, 10, 210)
-  text(normalizedAngle, 10, 240)
   text(pSlider.value(), 10, 300)
+  text(buttonVal, 10, 400)
+  text(p, 10, 330)
   noStroke();
-}
-
-function determineMouseDirection(){
-  if (mouseY < oldy) {              //determine the direction
-    direction = "up";
-} else if (mouseY > oldy) {
-        direction = "down";
-}
-oldy = mouseY;
-}
-
-function mouseover(){
-      // Is mouse over object
-      let m_dist = dist(mouseX, mouseY, x, y);
-      if (m_dist < r) {
-        rollover = true;
-      } else {
-        rollover = false;
-      }
-  
-}
-
-// function drawGui(){
-//   for (i = 1; i <= 17; i++)
-//  {
-//   let button = [i];
-//   button[i] = createButton(buttonArr[i]);
-//   button[i].position(windowWidth/18 * i, windowHeight/2);
-//   button[i].mousePressed(buttonVal = buttonArr[i]);
-//   button[i].mousePressed(changeR);
-//  }
-
-// }
-function changeR(buttonVal){
-
-  tempR = buttonVal;
-  
-   noStroke();
-   pSlider.remove();
-  
-  // dragging = false;
-  // let prevR = r;
-  // r = buttonVal;
-   pSlider = createSlider (0, tempR-10, 10, 1);
-   pSlider.position(400 + windowWidth/30, windowHeight-50);
-   pSlider.style('width', '900px');
-   tempP  = pSlider.value();
-  // let prevX = x;
-  // let prevY = y;
-  // l = p/r;
-  // k = r/R;
-  // x = width / 2 + (R-r) * cos(currentAngle);
-  // y = height / 2 + (R-r) * sin(currentAngle);
-  // penAngle = TWO_PI * counter + currentAngle;
-  // xpen = R * ((1 - k) * cos(penAngle) + (l * k * cos(((1-k) / k) * penAngle))) + (width) / 2
-  // ypen = R * ((1 - k) * sin(penAngle) - (l * k * sin(((1-k) / k) * penAngle))) + (height) / 2
-  //pSlider = createSlider(0, r-10, 10, 1);
-  //y = windowHeight/2 - (R-r);
-}
-
-
-function coordinates(){
-window.addEventListener('mouseup', function(e) {dragging = false;
-  rollover = false;}, false);
-//COUNTER METHOD
-if (mouseX < width / 2){
-if (direction == "up" && mouseY < windowHeight / 2 && crossedUp == false){
-  counter++;
-  crossedUp = true;
-  crossedDown = false;
-}else if (direction == "down" && mouseY > windowHeight / 2 && crossedDown == false){
-  counter--;
-  crossedUp = false;
-  crossedDown = true;
-}
-}else{
-if (direction == "down" && mouseY > windowHeight / 2 && crossedDown == false){
-   //counter--;
-   crossedUp = false;
-   crossedDown = true;
- }else if (direction == "up" && mouseY < windowHeight / 2 && crossedUp == false){
-   //counter--;
-   crossedUp = true;
-   crossedDown = false;
- }
-}
-}
-function confirmPreset(){
-  noStroke();
-  dragging = false;
-  let prevR = r;
-  r = tempR;
-  p = tempP;
-  l = p/r;
-  k = r/R;
-  x = width / 2 + (R-r) * cos(currentAngle);
-  y = height / 2 + (R-r) * sin(currentAngle);
-  penAngle = TWO_PI * counter + currentAngle;
-  xpen = R * ((1 - k) * cos(penAngle) + (l * k * cos(((1-k) / k) * penAngle))) + (width) / 2
-  ypen = R * ((1 - k) * sin(penAngle) - (l * k * sin(((1-k) / k) * penAngle))) + (height) / 2
-  p = pSlider.value();
-  xArr = [];
-  yArr = [];
 }
