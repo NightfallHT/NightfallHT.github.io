@@ -21,14 +21,19 @@ let confirmButton;
 
 var buttonVal = 24;
 var buttonVal2 = 24;
+let deltaAngle = 0;
 let currentAngle = 0;
+let mouseAngle = 0;
+let angleOffset = 0;
+
+let lastMouseAngle = null;
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
   // Buttons
   buttonArr.forEach((buttonVal, i) => {
     button = createButton(buttonVal);
-    button.position(windowWidth/2 - 390 + windowWidth/42 * (i+1), windowHeight - 100);
+    button.position(windowWidth/2 - 390 + 1920/42 * (i+1), windowHeight - 100);
     button.size(31,31);
     button.mousePressed(() => changeR(buttonVal));
 
@@ -66,6 +71,7 @@ function setup() {
   crossedDown = false;  //has the mouse crossed from the upper half to the bottom half
 
   mouseAngle = atan2(mouseY - height/2, mouseX - width/2);
+  currentAngle =  0;
   penAngle = -((R-r)/r)*mouseAngle;
 
   // Starting location
@@ -115,6 +121,10 @@ function draw() {
   ellipse(xpen,ypen,10);
   pop()
   noStroke();
+  if(dragging){
+    currentAngle =  atan2(y - height/2, x - width/2)
+    moveGear();
+  }
   // Drawing
   if (dragging === true){
     xArr.push(xpen);
@@ -128,25 +138,39 @@ function draw() {
   }
 }
 
+//
+function mouseReleased(){
+  dragging = false;
+  currentAngle =  atan2(y - height/2, x - width/2)
+
+}
+function moveGear(){
+  mouseAngle += (angleOffset)
+  x = width / 2 + (R-r) * cos((mouseAngle+deltaAngle))
+  y = height / 2 + (R-r) * sin((mouseAngle+deltaAngle))
+
+  coordinates();
+
+  penAngle = mouseAngle + deltaAngle + TWO_PI * counter;
+
+  xpen = R * ((1 - k) * cos(penAngle) + (l * k * cos(((1-k) / k) * penAngle))) + (width) / 2
+  ypen = R * ((1 - k) * sin(penAngle) - (l * k * sin(((1-k) / k) * penAngle))) + (height) / 2
+
+}
+
+function mouseMoved(){
+  mouseAngle =  atan2(mouseY - height/2, mouseX - width/2)
+}
 function mouseDragged(){
+  mouseAngle =  atan2(mouseY - height/2, mouseX - width/2)
+}
+
+function mousePressed(){
+  deltaAngle = currentAngle - mouseAngle;
   let m_dist = dist(mouseX, mouseY, x, y);      //mouse distance from the inner circle
   if (m_dist < r) {                           //determines whether the mouse is hovering over
       dragging = true;
   }
-  translate(width / 2, height / 2);
-
-  coordinates();
-
-  if(dragging){
-    mouseAngle =  atan2(mouseY - height/2, mouseX - width/2);
-    penAngle = TWO_PI * counter + mouseAngle;
-    x = width / 2 + (R-r) * cos(mouseAngle);
-    y = height / 2 + (R-r) * sin(mouseAngle);
-    currentAngle = mouseAngle;
-   
-    xpen = R * ((1 - k) * cos(penAngle) + (l * k * cos(((1-k) / k) * penAngle))) + (width) / 2
-    ypen = R * ((1 - k) * sin(penAngle) - (l * k * sin(((1-k) / k) * penAngle))) + (height) / 2
-    }
 }
 
 function determineMouseDirection(){
@@ -292,6 +316,7 @@ function displayData(){
   text(pSlider.value(), 10, 300)
   text(buttonVal, 10, 400)
   text(p, 10, 330)
+  text(deltaAngle, 10, 500)
   noStroke();
 }
 
@@ -299,5 +324,9 @@ function drawOutline(){
   fill(125);
   stroke(125);
   index = buttonArr.indexOf(buttonVal2);
-  rect(windowWidth/2 - 394 + windowWidth/42 * (index+1), windowHeight - 104, 39, 39, 4, 4)  
+  rect(windowWidth/2 - 394 + 1920/42 * (index+1), windowHeight - 104, 39, 39, 4, 4)  
 }//yes
+
+function windowResized(){
+  window.location.reload()
+}
