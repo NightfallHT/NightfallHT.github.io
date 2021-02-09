@@ -284,7 +284,16 @@ function star(x, y, radius1, radius2, npoints) {
 
 // User Interface
 function drawGUI(){
-  
+  push();
+  textAlign("center")
+  textSize(20)
+  stroke (0)
+  fill(255)
+  text('spirograph.exe', windowWidth/2, windowHeight*0.05)
+  textSize(15)
+  fill(50)
+  text('pIease be gentIe', windowWidth/2, windowHeight*0.09)
+  pop();
   stroke(50)
   fill(50)
   rect(windowWidth/2 - 450, windowHeight - 160, 900, 150, 20, 20,)   //ui Rectangle
@@ -301,7 +310,6 @@ function drawGUI(){
   text('B', windowWidth/2 + 75, windowHeight - 125)
   
 }
-
 // Display data
 function displayData(){
   stroke(255);
