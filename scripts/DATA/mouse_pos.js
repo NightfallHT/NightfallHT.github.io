@@ -52,33 +52,3 @@ function coordinates() {
     }
   }
 }
-
-//determines whether mouse is released, sets dragging to false and saves current gear angle
-
-function mouseReleased() {
-  dragging = false;
-  currentAngle = atan2(y - height / 2, x - width / 2)
-
-}
-
-//sets mouse angle whenever mouse is moved
-
-function mouseMoved() {
-  mouseAngle = atan2(mouseY - height / 2, mouseX - width / 2)
-}
-
-//sets mouse angle whenever mouse is dragged because mouseMoved doesn't work when the mouse is pressed
-
-function mouseDragged() {
-  mouseAngle = atan2(mouseY - height / 2, mouseX - width / 2)
-}
-
-//determines if the mouse is hovering over the circle when it's pressed, sets dragging to true
-
-function mousePressed() {
-  deltaAngle = currentAngle - mouseAngle;
-  let m_dist = dist(mouseX, mouseY, x, y);
-  if (m_dist < r) {
-    dragging = true;
-  }
-}
