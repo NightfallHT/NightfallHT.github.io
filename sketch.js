@@ -87,7 +87,7 @@ function setup() {
 
 function draw() {
   // Clearing background
-  background(0);
+  background(50);
   // Value reset
   l = p/r;
   k = r/R;
@@ -132,7 +132,7 @@ function draw() {
   }
   
   for (let i = 0; i<xArr.length; i++){
-    strokeWeight(1);
+    strokeWeight(2);
     stroke(red, green, blue);
     line (xArr[i-1], yArr[i-1], xArr[i], yArr[i]);
   }
