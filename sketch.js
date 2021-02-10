@@ -31,7 +31,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
 
   setupButtons();
-  setupSliders();
+  
   // Dimensions
   R = 96 * 2;          //radius of the outside circle
   r = buttonVal*2;      //radius of the inside circle
@@ -39,6 +39,8 @@ function setup() {
   d = 2 * r;            //diameter of the inside circle
   p = 10;  //distance of the pen
 
+  setupSliders();
+  
   counter = 0;          //how many times has the mouse angle reset
   crossedUp = false;    //has the mouse crossed from the bottom half to the upper half
   crossedDown = false;  //has the mouse crossed from the upper half to the bottom half
