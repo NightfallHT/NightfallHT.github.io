@@ -1,7 +1,0 @@
-{
-  "include": [
-    "*.js",
-    "libraries/*.js",
-    "c:\\Users\\hania\\.vscode\\extensions\\samplavigne.p5-vscode-1.2.6\\p5types\\global.d.ts"
-, "scripts/DATA/*.js", "scripts/DRAW/*.js","scripts/INTERACTION/*.js","scripts/SETUP/*.js", "scripts/sketch.js", ]
-}
