@@ -87,7 +87,7 @@ function setup() {
 
 function draw() {
   // Clearing background
-  background(50);
+  background(10);
   // Value reset
   l = p/r;
   k = r/R;
