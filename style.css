@@ -27,7 +27,7 @@ canvas {
   align-self: bottom;
   height: 30px;
   width: 1920px;
-  background-color: yellow;
+  background:none;
   z-index: 0;
 
 }
